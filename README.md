@@ -51,5 +51,3 @@ Requires Python 3, NumPy, SciPy, and NLopt. CuPy is used when a GPU is present. 
 | `simplex/simplex k_100/rerun_output/simplex_grid_k100.npy` | 70.16 MB | `f00ba25af833b6bd88cfcf4c53fa394b75965dc9697298a58013756a549a47bc` |
 | `24cell/k-covergence/24cell_kstudy_p12/24cell_grid_k30_0185d74c9f27d81b.npy` | 53.78 MB | `efeefc9505ca8ab390a68b49fb2e9f5324c94dfc7da3c3c3b550a36f7f221a16` |
 | `24cell/k-covergence/24cell_kstudy_p12/24cell_grid_k25_0185d74c9f27d81b.npy` | 27.54 MB | `e2c3ecc112e8b1e7e98697741d8273a4b2678802e8072761315cd2178ae7825f` |
-
-The two 157.43 MB grids are the same bytes, and the two 77.56 MB cross-polytope grids are the same bytes. Both filenames are kept because the manifests list them. `__pycache__/` is omitted from the archive.
