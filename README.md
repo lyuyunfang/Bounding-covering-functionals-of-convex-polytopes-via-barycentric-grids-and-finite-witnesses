@@ -1,1 +1,68 @@
 # Bounding covering functionals of convex polytopes via barycentric grids and finite witnesses
+# Bounding covering functionals of convex polytopes
+
+Reproduction package for upper bounds computed on barycentric grids, and for exact lower bounds certified by finite witnesses. The three bodies are the 24-cell, the 4-dimensional cross-polytope, and the 4-simplex.
+
+## Layout
+
+- `upper_bound_common.py` — shared geometry and the posteriori bound `U = f + n/(k+n)*(1-f)`.
+- `24cell/24cell ，k=40/` — numerical upper bounds for the 24-cell at grid level `k = 40` (`m = 8..16`). The audited run is in `rerun_output/`.
+- `24cell/k-covergence/` — grid-level study at `p = 12` for `k = 5,10,...,40`.
+- `24cell/Ablation experiment/` — search ablations (random vs VDI initialization, one vs three seeds, warm start). Tables and logs are in `数据/`.
+- `24cell/LB/` — exact certificates for the 24-cell, witness points, and `find_witness_points.py`.
+- `cross/crossploytope k_60/` — numerical upper bounds for the cross-polytope at `k = 60`.
+- `cross/LB/` — exact certificates for the cross-polytope.
+- `simplex/simplex k_100/` — numerical upper bounds for the simplex at `k = 100` (`p = 5,6,7`).
+- `simplex/LB/` — exact certificates for the simplex.
+
+Each `rerun_output/manifest.json` (and `24cell_kstudy_p12/manifest.json`) stores SHA-256 hashes of that numerical package. These are floating-point search records.
+
+## Checking a certificate
+
+From the corresponding `LB` directory:
+
+```text
+python gamma_24cell_exact_complete_v2.py --verify certificate_gamma8_24cell_exact.json
+python gamma_m_4d_exact_complete.py --verify certificate_gamma8_4d_exact.json
+python gamma_simplex_exact_complete_fixed.py --verify certificate_gamma5_simplex_exact.json
+```
+
+Requires Python 3, NumPy, SciPy, and NLopt. CuPy is used when a GPU is present. `find_witness_points.py` requires Gurobi.
+
+## Distribution
+
+The whole directory is published as one archive on this repository's GitHub Release. A release asset can be up to 2 GB, which covers every file here. The repository file list itself still rejects browser uploads over 25 MB, and a normal Git commit cannot contain a file over 100 MB.
+
+Two backtrack certificates exceed both of those repository limits. Gzip copies sit next to the original JSON. The SHA-256 is of the uncompressed JSON.
+
+| Uncompressed file | Size | Upload this | SHA-256 of the JSON |
+| --- | ---: | --- | --- |
+| `24cell/LB/certificate_gamma12_24cell_exact.json` | 386.22 MB | `certificate_gamma12_24cell_exact.json.gz` (5.04 MB) | `091fb8c81a1e4276ee986cd709b574bf265c1ac5200ecbd3a26712d623ef0a91` |
+| `cross/LB/certificate_gamma13_4d_direct.json` | 393.72 MB | `certificate_gamma13_4d_direct.json.gz` (3.76 MB) | `3079bdea1490d62b490f506b3c54752a59f0bfe0ea2263205afe4e25b83b6c26` |
+
+Decompress before `--verify`:
+
+```python
+import gzip, shutil
+src = "certificate_gamma12_24cell_exact.json.gz"  # or the cross-polytope file
+dst = src[:-3]
+with gzip.open(src, "rb") as fin, open(dst, "wb") as fout:
+    shutil.copyfileobj(fin, fout)
+```
+
+## Other files over 25 MB
+
+These barycentric grids are part of the same release archive. The two 157 MB grids also exceed the 100 MB Git limit.
+
+| File | Size |
+| --- | ---: |
+| `24cell/24cell ，k=40/rerun_output/grid_k40_s76.npy` | 157.43 MB |
+| `24cell/k-covergence/24cell_kstudy_p12/24cell_grid_k40_0185d74c9f27d81b.npy` | 157.43 MB |
+| `24cell/k-covergence/24cell_kstudy_p12/24cell_grid_k35_0185d74c9f27d81b.npy` | 95.38 MB |
+| `cross/crossploytope k_60/rerun_output/crosspolytope_grid_k60.npy` | 77.56 MB |
+| `cross/crossploytope k_60/rerun_output/grid_k60_8d00ce98fa7e8e0a9ebb37805cc1f2f4581c90c396e4df5fb929189ce6b36e5c.npy` | 77.56 MB |
+| `simplex/simplex k_100/rerun_output/simplex_grid_k100.npy` | 70.16 MB |
+| `24cell/k-covergence/24cell_kstudy_p12/24cell_grid_k30_0185d74c9f27d81b.npy` | 53.78 MB |
+| `24cell/k-covergence/24cell_kstudy_p12/24cell_grid_k25_0185d74c9f27d81b.npy` | 27.54 MB |
+
+The two 157.43 MB grids are the same file (`762193044b23f2a6eeee8adb9cc230698298ece2cadc27997945c934847d0ebf`). The two 77.56 MB cross-polytope grids are the same file (`82ee2ee9ea950f23beea2938814634936d8ccbbe1974da71da645111b71e4e9a`). Both names are listed in the manifests, so the archive keeps both filenames. `__pycache__/` is omitted.
